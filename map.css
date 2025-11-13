@@ -25,5 +25,42 @@ body {
 
   circle {
     pointer-events: auto;
+    --color-departures: steelblue;
+    --color-arrivals: darkorange;
+    --color: color-mix(
+      in oklch,
+      var(--color-departures) calc(100% * var(--departure-ratio)),
+      var(--color-arrivals)
+    );
+    fill: var(--color);
+  }
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0.5em auto;
+  font-size: 0.9rem;
+  width: 100%;
+  div {
+    --color-departures: steelblue;
+    --color-arrivals: darkorange;
+    --color: color-mix(
+      in oklch,
+      var(--color-departures) calc(100% * var(--departure-ratio)),
+      var(--color-arrivals)
+    );
+
+    flex: 1;
+    text-align: center;
+    border-radius: 0.25em;
+    gap: 1px;
+    font-weight: 500;
+    padding: 0.25em 0.5em;
+    background-color: var(--color);
+    color: white;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
   }
 }

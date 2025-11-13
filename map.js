@@ -137,6 +137,8 @@ map.on("load", async () => {
     .domain([0, d3.max(stations, (d) => d.totalTraffic)])
     .range([0, 25]);
 
+  let stationFlow = d3.scaleQuantize().domain([0, 1]).range([0, 0.5, 1]);
+
   const svg = d3.select("#map").select("svg");
   const circles = svg
     .selectAll("circle")
@@ -147,7 +149,10 @@ map.on("load", async () => {
     .attr("stroke", "white") // Circle border color
     .attr("stroke-width", 1) // Circle border thickness
     .attr("opacity", 0.8) // Circle opacity
-    .attr("r", (d) => radiusScale(d.totalTraffic)); // Circle radius based on total traffic
+    .attr("r", (d) => radiusScale(d.totalTraffic)) // Circle radius based on total traffic
+    .style("--departure-ratio", (d) =>
+      stationFlow(d.departures / d.totalTraffic)
+    );
 
   function updatePositions() {
     circles
@@ -197,11 +202,12 @@ map.on("load", async () => {
     timeFilter === -1 ? radiusScale.range([0, 25]) : radiusScale.range([3, 50]);
 
     // Update the scatterplot by adjusting the radius of circles
-    const updatedCircles = svg
-      .selectAll("circle")
+    circles
       .data(filteredStations, (d) => d.short_name)
-      .join("circle") // Ensure the data is bound correctly
-      .attr("r", (d) => radiusScale(d.totalTraffic)); // Update circle sizes
+      .attr("r", (d) => radiusScale(d.totalTraffic)) // Update circle sizes
+      .style("--departure-ratio", (d) =>
+        stationFlow(d.departures / d.totalTraffic)
+      );
   }
   timeSlider.addEventListener("input", updateTimeDisplay);
   updateTimeDisplay();
